@@ -1,34 +1,20 @@
-// llmNode.js
+import { Position as LLMPosition } from 'reactflow'; // Use alias to avoid name conflict
+import { BaseNode as LLMBaseNode } from './BaseNode';
 
-import { Handle, Position } from 'reactflow';
+const llmHandles = [
+  { type: 'target', position: LLMPosition.Left, id: 'system', top: '35%' },
+  { type: 'target', position: LLMPosition.Left, id: 'prompt', top: '65%' },
+  { type: 'source', position: LLMPosition.Right, id: 'response' },
+];
 
-export const LLMNode = ({ id, data }) => {
-
+export const LLMNode = () => {
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-system`}
-        style={{top: `${100/3}%`}}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-prompt`}
-        style={{top: `${200/3}%`}}
-      />
-      <div>
-        <span>LLM</span>
+    <LLMBaseNode title="LLM" handles={llmHandles} >
+      <div style={{ color: '#6b7280' }}>.</div>
+      <div style={{ marginTop: '10px' }}>
+        <label style={{ display: 'block', color: '#374151', fontSize: 25 }}>This is a llm</label>
       </div>
-      <div>
-        <span>This is a LLM.</span>
-      </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-response`}
-      />
-    </div>
+    </LLMBaseNode>
   );
-}
+};
+

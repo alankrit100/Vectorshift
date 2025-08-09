@@ -6,20 +6,48 @@ import { useState, useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
 import { useStore } from './store';
 import { shallow } from 'zustand/shallow';
+
+// --- CORRECTED IMPORTS ---
+// 1. You should delete the old individual node files (inputNode.js, etc.)
+// 2. Import the refactored and new nodes from your consolidated files.
+
+// Import the original four nodes from their new, refactored home
+
 import { InputNode } from './nodes/inputNode';
 import { LLMNode } from './nodes/llmNode';
 import { OutputNode } from './nodes/outputNode';
 import { TextNode } from './nodes/textNode';
 
+// Import the five new nodes from their file
+import {
+  FilterNode,
+  MergeNode,
+  CsvUploadNode,
+  LogNode,
+  ChangeCaseNode,
+} from './nodes/customNodes'; // Make sure you have this file
+
 import 'reactflow/dist/style.css';
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
+
+// --- CORRECTED NODETYPES ---
+// This object correctly registers all your usable nodes.
+// Note that BaseNode is NOT included here.
 const nodeTypes = {
   customInput: InputNode,
   llm: LLMNode,
   customOutput: OutputNode,
   text: TextNode,
+  
+  
+  // Keys for your new nodes
+  filter: FilterNode,
+  merge: MergeNode,
+  csvUpload: CsvUploadNode,
+  log: LogNode,
+  changeCase: ChangeCaseNode,
 };
 
 const selector = (state) => ({
@@ -58,12 +86,11 @@ export const PipelineUI = () => {
           if (event?.dataTransfer?.getData('application/reactflow')) {
             const appData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
             const type = appData?.nodeType;
-      
-            // check if the dropped element is valid
+    
             if (typeof type === 'undefined' || !type) {
               return;
             }
-      
+    
             const position = reactFlowInstance.project({
               x: event.clientX - reactFlowBounds.left,
               y: event.clientY - reactFlowBounds.top,
@@ -76,11 +103,11 @@ export const PipelineUI = () => {
               position,
               data: getInitNodeData(nodeID, type),
             };
-      
+    
             addNode(newNode);
           }
         },
-        [reactFlowInstance]
+        [reactFlowInstance, addNode, getNodeID]
     );
 
     const onDragOver = useCallback((event) => {
@@ -90,7 +117,7 @@ export const PipelineUI = () => {
 
     return (
         <>
-        <div ref={reactFlowWrapper} style={{width: '100wv', height: '70vh'}}>
+        <div ref={reactFlowWrapper} style={{width: '100vw', height: '70vh'}}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
