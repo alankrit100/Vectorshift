@@ -1,34 +1,51 @@
+import React from 'react';
 import { Handle } from 'reactflow';
 
-// Centralized styling for all nodes to ensure a consistent look and feel.
+// Centralized styling inspired by VectorShift's dark theme.
+// All styles are defined as JavaScript objects inside the component file.
 const nodeStyle = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #d1d5db',
+  backgroundColor: '#2D3748', // Dark gray background
+  border: '1px solid #4A5568', // Slightly lighter border
   borderRadius: '8px',
-  padding: '16px',
+  padding: '0', // Padding will be handled by internal divs
   width: 280,
-  fontFamily: 'sans-serif',
+  fontFamily: 'Inter, sans-serif', // Modern sans-serif font
   fontSize: '13px',
-  color: '#1f2937',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+  color: '#E2E8F0', // Light text color for contrast
+  boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.25)',
 };
 
 const titleStyle = {
   fontSize: '14px',
   fontWeight: '600',
-  color: '#11182c',
-  marginBottom: '12px',
-  paddingBottom: '8px',
-  borderBottom: '1px solid #e5e7eb',
+  color: '#CBD5E0',
+  padding: '12px 16px',
   display: 'flex',
   alignItems: 'center',
 };
 
+const contentStyle = {
+    padding: '0 16px 16px 16px',
+};
 
+/**
+ * A generic, styled wrapper for all nodes in the application.
+ * @param {object} props
+ * @param {string} props.title - The text to display in the node's header.
+ * @param {string} props.borderColor - The color for the top border of the node.
+ * @param {React.ReactNode} props.icon - An optional icon (like an emoji) for the header.
+ * @param {Array<object>} props.handles - An array of configuration objects for the reactflow Handles.
+ * @param {React.ReactNode} props.children - The unique content to render inside the node.
+ */
+export const BaseNode = ({ title, icon, handles, children, borderColor = '#4A5568' }) => {
+  // Create a dynamic style for the main div to include the custom top border color
+  const dynamicNodeStyle = {
+    ...nodeStyle,
+    borderTop: `4px solid ${borderColor}`,
+  };
 
-export const BaseNode = ({ title, icon, handles, children }) => {
   return (
-    <div style={nodeStyle}>
+    <div style={dynamicNodeStyle}>
       {/* Dynamically render all handles passed in the props */}
       {handles.map((handle) => (
         <Handle
@@ -36,19 +53,23 @@ export const BaseNode = ({ title, icon, handles, children }) => {
           type={handle.type}
           position={handle.position}
           id={handle.id}
-          style={{ top: handle.top, background: '#9ca3af' }}
+          style={{ 
+            top: handle.top, 
+            background: '#4A5568', // Handle color
+            border: '2px solid #2D3748' 
+          }}
         />
       ))}
       
       <div style={titleStyle}>
-        {icon && <span style={{ marginRight: '8px' }}>{icon}</span>}
+        {icon && <span style={{ marginRight: '8px', fontSize: '16px' }}>{icon}</span>}
         {title}
       </div>
       
-      <div>
+      {/* The unique content for each node goes here */}
+      <div style={contentStyle}>
         {children}
       </div>
     </div>
   );
 };
-
