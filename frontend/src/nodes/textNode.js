@@ -93,7 +93,7 @@ export const TextNode = ({ id, data }) => {
 
   return (
     // We pass our dynamically generated handles to the BaseNode
-    <BaseNode title="Text" icon={'📝'} handles={allHandles} borderColor="#10B981">
+    <BaseNode title="Text" icon={'📝'} id={id} handles={allHandles} borderColor="#10B981">
       <label style={{display: 'block', fontWeight: 500}}>
         Text
         <textarea

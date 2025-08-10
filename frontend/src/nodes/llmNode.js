@@ -10,7 +10,7 @@ export const LLMNode = ({ id }) => {
   ];
 
   return (
-    <BaseNode title="LLM" icon={'🧠'} handles={handles} borderColor="#8B5CF6">
+    <BaseNode title="LLM" icon={'🧠'} id={id} handles={handles} borderColor="#8B5CF6">
       <div style={{ textAlign: 'left', color: '#e4e7eeff' }}>
         This is a Large Language Model.
       </div>

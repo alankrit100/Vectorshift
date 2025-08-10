@@ -12,7 +12,7 @@ export const OutputNode = ({ id, data }) => {
 
   return (
     // Using the same BaseNode wrapper for a consistent frame
-    <BaseNode title="Output" icon={'⬅️'} handles={handles} borderColor="#EC4899">
+    <BaseNode title="Output" icon={'⬅️'} id={id}  handles={handles} borderColor="#EC4899">
       
       {/* Applying the exact same label and input styling as InputNode */}
       <label style={{display: 'block', fontWeight: 500, marginBottom: '12px'}}>

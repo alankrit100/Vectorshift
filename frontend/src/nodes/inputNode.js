@@ -11,7 +11,7 @@ export const InputNode = ({ id, data }) => {
   ];
 
   return (
-    <BaseNode title="Input" icon={'➡️'} handles={handles} borderColor="#3B82F6">
+    <BaseNode title="Input" id={id} icon={'➡️'} handles={handles} borderColor="#3B82F6">
       <label style={{display: 'block', fontWeight: 500, marginBottom: '12px'}}>
         Name
         <input 

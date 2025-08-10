@@ -1,73 +1,104 @@
 import React from 'react';
 import { Handle } from 'reactflow';
+import { useStore } from '../store'; // Import the useStore hook
+import { shallow } from 'zustand/shallow';
 
-// Centralized styling inspired by VectorShift's dark theme.
-// All styles are defined as JavaScript objects inside the component file.
+// --- STYLES (Unchanged from before) ---
 const nodeStyle = {
-  backgroundColor: '#2D3748', // Dark gray background
-  border: '1px solid #4A5568', // Slightly lighter border
+  backgroundColor: '#ffffff',
+  border: '1px solid #d1d5db',
   borderRadius: '8px',
-  padding: '0', // Padding will be handled by internal divs
+  padding: '16px',
   width: 280,
-  fontFamily: 'Inter, sans-serif', // Modern sans-serif font
+  fontFamily: "'Inter', sans-serif",
   fontSize: '13px',
-  color: '#E2E8F0', // Light text color for contrast
-  boxShadow: '0 4px 14px 0 rgba(0, 0, 0, 0.25)',
+  color: '#1f2937',
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+  position: 'relative', // Make this a positioning context for the button
 };
 
 const titleStyle = {
   fontSize: '14px',
   fontWeight: '600',
-  color: '#CBD5E0',
-  padding: '12px 16px',
+  color: '#11182c',
+  marginBottom: '12px',
+  paddingBottom: '8px',
+  borderBottom: '1px solid #e5e7eb',
   display: 'flex',
   alignItems: 'center',
 };
 
-const contentStyle = {
-    padding: '0 16px 16px 16px',
+// --- NEW STYLE for the delete button ---
+const deleteButtonStyle = {
+  position: 'absolute',
+  top: '8px',
+  right: '8px',
+  width: '20px',
+  height: '20px',
+  background: '#F1F5F9',
+  border: '1px solid #CBD5E1',
+  borderRadius: '50%',
+  color: '#64748B',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '14px',
+  fontWeight: 'bold',
+  lineHeight: '1',
+  transition: 'background-color 0.2s, color 0.2s',
 };
 
-/**
- * A generic, styled wrapper for all nodes in the application.
- * @param {object} props
- * @param {string} props.title - The text to display in the node's header.
- * @param {string} props.borderColor - The color for the top border of the node.
- * @param {React.ReactNode} props.icon - An optional icon (like an emoji) for the header.
- * @param {Array<object>} props.handles - An array of configuration objects for the reactflow Handles.
- * @param {React.ReactNode} props.children - The unique content to render inside the node.
- */
-export const BaseNode = ({ title, icon, handles, children, borderColor = '#4A5568' }) => {
-  // Create a dynamic style for the main div to include the custom top border color
-  const dynamicNodeStyle = {
-    ...nodeStyle,
-    borderTop: `4px solid ${borderColor}`,
+const selector = (state) => ({
+  onNodesChange: state.onNodesChange,
+});
+
+export const BaseNode = ({ id, title, icon, handles, children }) => {
+  // Get the onNodesChange function from your Zustand store
+  const { onNodesChange } = useStore(selector, shallow);
+
+  // This function is called when the delete button is clicked
+  const handleDelete = (event) => {
+    event.stopPropagation(); // Prevents the node from being selected
+    // Creates the "remove" event that React Flow understands
+    const removeChange = [{ type: 'remove', id: id }];
+    onNodesChange(removeChange);
   };
 
   return (
-    <div style={dynamicNodeStyle}>
-      {/* Dynamically render all handles passed in the props */}
+    <div style={nodeStyle}>
+      {/* --- DELETE BUTTON --- */}
+      <button
+        style={deleteButtonStyle}
+        onClick={handleDelete}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#FECACA';
+          e.currentTarget.style.color = '#DC2626';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#F1F5F9';
+          e.currentTarget.style.color = '#64748B';
+        }}
+        title="Delete node"
+      >
+        ×
+      </button>
+
+      {/* --- EXISTING NODE CONTENT --- */}
       {handles.map((handle) => (
         <Handle
           key={handle.id}
           type={handle.type}
           position={handle.position}
           id={handle.id}
-          style={{ 
-            top: handle.top, 
-            background: '#4A5568', // Handle color
-            border: '2px solid #2D3748' 
-          }}
+          style={{ top: handle.top, background: '#9ca3af' }}
         />
       ))}
-      
       <div style={titleStyle}>
-        {icon && <span style={{ marginRight: '8px', fontSize: '16px' }}>{icon}</span>}
+        {icon && <span style={{ marginRight: '8px' }}>{icon}</span>}
         {title}
       </div>
-      
-      {/* The unique content for each node goes here */}
-      <div style={contentStyle}>
+      <div>
         {children}
       </div>
     </div>
